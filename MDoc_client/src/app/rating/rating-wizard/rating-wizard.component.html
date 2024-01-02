@@ -1,0 +1,187 @@
+<div class="wrapper d-flex justify-content-center align-items-center flex-column">
+    <p class="font-24 my-4 bold">ברוכים הבאים לדירוג שילמד אותך על עצמך עד כמה הבנק ירצה לתת לך משכנתא</p>
+
+    <div class="card-wrapper">
+        <mat-card>
+            <mat-card-content>
+                <form [formGroup]="form">
+
+                    <mat-stepper [linear]="false">
+
+                        <mat-step label="קצת עליך ועל הנכס...">
+
+                            <div formGroupName="personalDetails" class="d-flex flex-column gap-3">
+                                <h3>פרטים אישיים</h3>
+                                <mat-form-field>
+                                    <input matInput formControlName="name" placeholder="שם">
+                                    <mat-error *ngIf="form.controls.personalDetails.controls.name.hasError('required')">
+                                        שדה חובה
+                                    </mat-error>
+                                </mat-form-field>
+
+                                <mat-form-field>
+                                    <input type="number" matInput placeholder="גיל" formControlName="age" min="18" >
+
+                                    <mat-error *ngIf="form.controls.personalDetails.controls.age.hasError('required')">
+                                        שדה חובה
+                                    </mat-error>
+
+                                    <mat-error *ngIf="form.controls.personalDetails.controls.age.hasError('min')">
+                                        הגיל חיב להיות מעל 18
+                                    </mat-error>
+
+                                    <mat-error *ngIf="form.controls.personalDetails.controls.age.hasError('max')">
+                                        הגיל חייב להיות מתחת ל 80
+                                    </mat-error>
+
+                                </mat-form-field>
+
+                                <mat-form-field>
+                                    <input matInput formControlName="idNumber" placeholder="תעודת זהות">
+                                    <mat-error
+                                        *ngIf="form.controls.personalDetails.controls.idNumber.hasError('pattern') ||
+                                        form.controls.personalDetails.controls.idNumber.hasError('validateTZ')">
+                                        תעודת זהות לא תקינה
+                                    </mat-error>
+                                </mat-form-field>
+
+                            </div>
+                            <div formGroupName="property" class="d-flex flex-column gap-3">
+                                <h3 >הנכס</h3>
+
+                                <mat-form-field>
+                                    <input matInput formControlName="requestedLoanAmount" type="number"
+                                        placeholder="סכום המשכנתא המבוקשת">
+                                    <!-- 
+                                        <mat-slider  min="100000" max="5000000" step="1000" value="100000" showTickMarks 
+                                        discrete>
+                                            <input matSliderThumb formControlName="requestedLoanAmount">
+                                          </mat-slider> -->
+
+
+                                    <mat-error
+                                        *ngIf="form.controls.property.controls.requestedLoanAmount.hasError('min')">
+                                        סכום הבקשה חייב להיות לפחות 100,000 ש"ח
+                                    </mat-error>
+                                    <mat-error
+                                        *ngIf="form.controls.property.controls.requestedLoanAmount.hasError('required')">
+                                        שדה חובה
+                                    </mat-error>
+                                </mat-form-field>
+
+                                <mat-form-field>
+                                    <input matInput formControlName="propertyValue" type="number"
+                                        placeholder="ערך הנכס (מוערך)">
+                                    <mat-error *ngIf="form.controls.property.controls.propertyValue.hasError('min')">
+                                        ערך הנכס חייב להיות לפחות 300,000 ש"ח
+                                    </mat-error>
+                                    <mat-error
+                                        *ngIf="form.controls.property.controls.propertyValue.hasError('required')">
+                                        שדה חובה
+                                    </mat-error>
+                                </mat-form-field>
+
+                                <mat-form-field>
+                                    <input matInput formControlName="equity" type="number" placeholder="הון עצמי">
+                                    <mat-error *ngIf="form.controls.property.controls.equity.hasError('required')">
+                                        שדה חובה
+                                    </mat-error>
+                                </mat-form-field>
+
+                            </div>
+
+
+                        </mat-step>
+
+                        <!-- Step 2 -->
+
+                        <mat-step label="הכנסות והתחייבויות">
+
+                            <div formArrayName="incomes">
+                                <button mat-button color="primary" (click)="addIncome()" class="m-3">
+                                    <mat-icon>add</mat-icon>
+                                    הוסף הכנסה
+                                </button>
+
+                                <div>
+
+                                    <div *ngFor="let income of form.controls.incomes.controls; let i = index">
+
+                                        <div [formGroupName]="i"
+                                            class="d-flex justify-content-around align-items-center">
+
+                                            <mat-form-field>
+                                                <mat-label>מקור ההכנסה</mat-label>
+                                                <mat-select formControlName="source">
+                                                    @for (source of incomeSources; track source) {
+                                                    <mat-option [value]="source.key">{{source.value}}</mat-option>
+                                                    }
+                                                </mat-select>
+                                            </mat-form-field>
+
+
+                                            <mat-form-field>
+                                                <input matInput formControlName="seniority" placeholder="וותק בשנים">
+                                            </mat-form-field>
+                                            <mat-form-field>
+                                                <input matInput formControlName="sum" type="number"
+                                                    placeholder="סכום ההכנסה החודשית">
+                                            </mat-form-field>
+
+                                            <mat-icon aria-hidden="false" aria-label="Example home icon"
+                                                fontIcon="delete" (click)="deleteIncome(i)"></mat-icon>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                            <div formGroupName="payingOut" class="d-flex flex-column gap-3">
+                                <h3>התחייבויות</h3>
+                                <mat-form-field>
+                                    <input matInput formControlName="monthlyRefund"
+                                        placeholder="סך החזר חודשי לכל ההתחייבויות">
+                                    <mat-error *ngIf="form.controls.personalDetails.controls.name.hasError('required')">
+                                        שדה חובה
+                                    </mat-error>
+                                </mat-form-field>
+
+                                <mat-form-field>
+                                    <input matInput formControlName="sumDebts"
+                                        placeholder="סכום כולל של כל ההלוואות הקיימות">
+                                    <mat-error *ngIf="form.controls.personalDetails.controls.name.hasError('required')">
+                                        שדה חובה
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+
+
+
+                        </mat-step>
+
+                        <mat-step label="הסטוריה">
+                            <div formGroupName="history">
+                                <mat-form-field>
+                                    <mat-label>הסטוריה כלכלית</mat-label>
+                                    <mat-select formControlName="economicHistory">
+                                        @for (item of economicHistory; track item) {
+                                        <mat-option [value]="item.key">{{item.value}}</mat-option>
+                                        }
+                                    </mat-select>
+                                </mat-form-field>
+
+                            </div>
+
+                            <button mat-button matStepperPrevious>Back</button>
+                            <button mat-button (click)="submit()">Submit</button>
+                        </mat-step>
+
+                    </mat-stepper>
+
+                </form>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

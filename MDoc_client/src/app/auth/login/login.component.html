@@ -1,0 +1,30 @@
+<div id="Login">
+    <div class="flex flex-column justify-content-center align-items-center h-100 pt-5">
+
+        <div class="internal-content mx-auto">
+            <form [formGroup]="loginForm">
+        
+                <div class="field form-group">
+                    <label for="username" class="mb-1 font-16 text-color-secondary">שם משתמש</label>
+                    
+                    <input type="text" pInputText id="username" formControlName="userName" class="w-100" autofocus />
+                </div>
+
+                <div class="field form-group">
+                    <label for="password" class="mb-1 font-16 text-color-secondary">סיסמא</label>
+                    <br/>
+                    <p-password formControlName="password" [toggleMask]="true" [feedback]="false"
+                        class="w-100"></p-password>
+                </div>
+
+                
+                <div></div>
+                <p-button type="submit" label="שלח" styleClass="w-100" (click)="onSubmit()">Submit</p-button>
+            </form>
+
+        </div>
+    </div>
+
+
+
+</div>
